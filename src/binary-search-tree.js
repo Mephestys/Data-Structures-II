@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-trailing-spaces */
+const Queue = require('./queue-helper');
 
 class BinarySearchTree {
   constructor(value) {
@@ -42,16 +43,23 @@ class BinarySearchTree {
   // Applies the given callback to each tree node in the process
   depthFirstForEach(cb) {
     // depth first is a stack
-    const stack = [this];
-    let tree;
+    // const stack = [this];
+    // let tree;
 
-    while (stack.length) {
-      tree = stack.pop();
-      cb(tree.value);
-      if (tree.right) { stack.push(tree.right); }
-      if (tree.left) { stack.push(tree.left); }
+    // while (stack.length) {
+    //   tree = stack.pop();
+    //   cb(tree.value);
+    //   if (tree.right) { stack.push(tree.right); }
+    //   if (tree.left) { stack.push(tree.left); }
+    cb(this.value);
+    if (this.left) {
+      this.left.depthFirstForEach(cb);
+    }
+    if (this.right) {
+      this.right.depthFirstForEach(cb);
     }
   }
+
   // Traverses the tree in a breadth-first manner, i.e. in layers, starting 
   // at the root node, going down to the root node's children, and iterating
   // through all those nodes first before moving on to the next layer of nodes
@@ -61,14 +69,26 @@ class BinarySearchTree {
 
   breadthFirstForEach(cb) {
     // breadth first is a queue
-    const queue = [this];
-    let tree;
+    // const queue = [this];
+    // let tree;
 
-    while (queue.length) {
-      tree = queue.shift();
-      cb(tree.value);
-      if (tree.left) { queue.push(tree.left); }
-      if (tree.right) { queue.push(tree.right); }
+    // while (queue.length) {
+    //   tree = queue.shift();
+    //   cb(tree.value);
+    //   if (tree.left) { queue.push(tree.left); }
+    //   if (tree.right) { queue.push(tree.right); }
+    // }
+    const q = new Queue();
+    q.enqueue(this);
+    while (!q.isEmpty()) {
+      const node = q.dequeue();
+      if (node.left) {
+        q.enqueue(node.left);
+      }
+      if (node.right) {
+        q.enqueue(node.right);
+      }
+      cb(node.value);
     }
   }
 }

@@ -42,40 +42,92 @@ class Graph {
   // Optionally accepts an array of other GraphNodes for the new vertex to be connected to
   // Returns the newly-added vertex
   addVertex(value, edges = []) {
-
+    const vertex = new GraphNode({ value, edges: [] });
+    if (this.vertices.length === 2) this.addEdge(this.vertices[0], this.vertices[1]);
+    if (edges !== []) {
+      for (let i = 0; i < edges.length; i++) {
+        this.addEdge(vertex, edges[i]);
+      }
+    }
+    // return vertex;
+    return this.vertices.push(vertex);
   }
+
   // Checks all the vertices of the graph for the target value
   // Returns true or false
   contains(value) {
-
+    for (let i = 0; i < this.vertices.length; i++) {
+      if (this.vertices[i].value === value) return true;
+    }
+    return false;
+    // this.vertices.forEach((currentValue) => {
+    //   console.log(currentValue.value === value);
+    //   if (currentValue.value === value) return true;
+    // });
+    // return false;
+    // WHY DOES THIS FOREACH LOOP RETURN FALSE WHEN THE CONSOLE LOG RETURNS TRUE???
   }
+
   // Checks the graph to see if a GraphNode with the specified value exists in the graph 
   // and removes the vertex if it is found
   // This function should also handle the removing of all edge references for the removed vertex
   removeVertex(value) {
+    if (!this.contains(value)) return false;
+    if (this.contains(value)) {
+      delete this.vertices[value];
+      // delete this.vertices[value];
 
+  //     this.vertices.forEach((key, index) => {
+  //       if (this.vertices[key].edges[value]) {
+  //         delete this.vertices[key].edges[value];
+  //       }
+  //     });
+  //     // return true;
+  //   }
+  // }
+    }
   }
+
   // Checks the two input vertices to see if each one references the other in their respective edges array
   // Both vertices must reference each other for the edge to be considered valid
   // If only one vertex references the other but not vice versa, should not return true
   // Note: You'll need to store references to each vertex's array of edges so that you can use 
   // array methods on said arrays. There is no method to traverse the edge arrays built into the GraphNode class
   checkIfEdgeExists(fromVertex, toVertex) {
-
+    if (fromVertex.edges.includes(toVertex) && toVertex.edges.includes(fromVertex)) return true;
+    return false;
   }
   // Adds an edge between the two given vertices if no edge already exists between them
   // Again, an edge means both vertices reference the other 
   addEdge(fromVertex, toVertex) {
-
+    if (this.checkIfEdgeExists(fromVertex, toVertex)) return;
+    fromVertex.pushToEdges(toVertex);
+    toVertex.pushToEdges(fromVertex);
   }
   // Removes the edge between the two given vertices if an edge already exists between them
   // After removing the edge, neither vertex should be referencing the other
   // If a vertex would be left without any edges as a result of calling this function, those
   // vertices should be removed as well
   removeEdge(fromVertex, toVertex) {
-
+    if (!this.checkIfEdgeExists(fromVertex, toVertex)) return;
+    for (let i = 0; i < fromVertex.edges.length; i++) {
+      for (let j = 0; j < toVertex.edges.length; j++) {
+        if (fromVertex.edges[i] === toVertex.edges[j]) {
+          fromVertex.edges.slice(i, 1);
+          toVertex.edges.slice(j, 1);
+        }
+      }
+    }
   }
 }
 
 module.exports = Graph;
 
+const graph = new Graph();
+graph.addVertex('hi there');
+graph.addVertex('eat it');
+graph.addVertex('dark meat');
+console.log(graph.contains('hi there'));
+graph.removeVertex('hi there');
+console.log(graph.contains('hi there'));
+console.dir(graph);
