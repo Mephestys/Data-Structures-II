@@ -42,15 +42,17 @@ class Graph {
   // Optionally accepts an array of other GraphNodes for the new vertex to be connected to
   // Returns the newly-added vertex
   addVertex(value, edges = []) {
-    const vertex = new GraphNode({ value, edges: [] });
-    if (this.vertices.length === 2) this.addEdge(this.vertices[0], this.vertices[1]);
-    if (edges !== []) {
-      for (let i = 0; i < edges.length; i++) {
-        this.addEdge(vertex, edges[i]);
-      }
+    const vertex = new GraphNode({ value, edges });
+    if (edges.length > 0) {
+      edges.forEach((edge) => {
+        this.addEdge(vertex, edge);
+      });
     }
-    // return vertex;
-    return this.vertices.push(vertex);
+    this.vertices.push(vertex);
+    if (this.vertices.length === 2) {
+      this.addEdge(this.vertices[0], this.vertices[1]);
+    }
+    return vertex;
   }
 
   // Checks all the vertices of the graph for the target value
@@ -60,12 +62,6 @@ class Graph {
       if (this.vertices[i].value === value) return true;
     }
     return false;
-    // this.vertices.forEach((currentValue) => {
-    //   console.log(currentValue.value === value);
-    //   if (currentValue.value === value) return true;
-    // });
-    // return false;
-    // WHY DOES THIS FOREACH LOOP RETURN FALSE WHEN THE CONSOLE LOG RETURNS TRUE???
   }
 
   // Checks the graph to see if a GraphNode with the specified value exists in the graph 
@@ -75,6 +71,8 @@ class Graph {
     if (!this.contains(value)) return false;
     if (this.contains(value)) {
       delete this.vertices[value];
+      console.log(this.vertices);
+      // this.vertices.removeEdge();
       // delete this.vertices[value];
 
   //     this.vertices.forEach((key, index) => {
@@ -100,7 +98,7 @@ class Graph {
   // Adds an edge between the two given vertices if no edge already exists between them
   // Again, an edge means both vertices reference the other 
   addEdge(fromVertex, toVertex) {
-    if (this.checkIfEdgeExists(fromVertex, toVertex)) return;
+    if (!this.checkIfEdgeExists(fromVertex, toVertex));
     fromVertex.pushToEdges(toVertex);
     toVertex.pushToEdges(fromVertex);
   }
@@ -130,4 +128,4 @@ graph.addVertex('dark meat');
 console.log(graph.contains('hi there'));
 graph.removeVertex('hi there');
 console.log(graph.contains('hi there'));
-console.dir(graph);
+console.dir(graph.vertices[0]);
